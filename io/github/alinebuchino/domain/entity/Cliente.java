@@ -3,12 +3,13 @@ package io.github.alinebuchino.domain.entity;
 import javax.persistence.*;
 
 @Entity // pra dizer ao JPA que Cliente é uma entidade do BD
-@Table(name = "tb_cliente") // utiliza caso queira colocar um nome diferente na tabela, por padrão seria o nome da classe
+@Table(name = "Cliente") // utiliza caso queira colocar um nome diferente na tabela, por padrão seria o nome da classe
 public class Cliente {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO) // representa o auto_increment
     @Column(name = "id") // utiliza caso queira colocar um nome diferente no campo da tabela
     private Integer id;
+    @Column(name = "nome", length = 100)
     private String nome;
 
     public Cliente() {
