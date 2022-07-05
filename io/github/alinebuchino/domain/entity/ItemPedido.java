@@ -1,4 +1,4 @@
-package io.github.alinebuchino.entity;
+package io.github.alinebuchino.domain.entity;
 
 public class ItemPedido {
     private Integer id;

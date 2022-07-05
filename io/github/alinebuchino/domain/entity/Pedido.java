@@ -1,4 +1,4 @@
-package io.github.alinebuchino.entity;
+package io.github.alinebuchino.domain.entity;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

@@ -1,8 +1,27 @@
-package io.github.alinebuchino.entity;
+package io.github.alinebuchino.domain.entity;
 
+import javax.persistence.*;
+
+@Entity // pra dizer ao JPA que Cliente é uma entidade do BD
+@Table(name = "tb_cliente") // utiliza caso queira colocar um nome diferente na tabela, por padrão seria o nome da classe
 public class Cliente {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO) // representa o auto_increment
+    @Column(name = "id") // utiliza caso queira colocar um nome diferente no campo da tabela
     private Integer id;
     private String nome;
+
+    public Cliente() {
+    }
+
+    public Cliente(Integer id, String nome) {
+        this.id = id;
+        this.nome = nome;
+    }
+
+    public Cliente(String nome) {
+        this.nome = nome;
+    }
 
     public Integer getId() {
         return id;
@@ -18,5 +37,13 @@ public class Cliente {
 
     public void setNome(String nome) {
         this.nome = nome;
+    }
+
+    @Override
+    public String toString() {
+        return "Cliente{" +
+                "id=" + id +
+                ", nome='" + nome + '\'' +
+                '}';
     }
 }
