@@ -1,9 +1,10 @@
 package io.github.alinebuchino.domain.entity;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Entity // pra dizer ao JPA que Cliente é uma entidade do BD
-@Table(name = "Cliente") // utiliza caso queira colocar um nome diferente na tabela, por padrão seria o nome da classe
+@Table(name = "cliente") // utiliza caso queira colocar um nome diferente na tabela, por padrão seria o nome da classe
 public class Cliente {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO) // representa o auto_increment
@@ -12,7 +13,18 @@ public class Cliente {
     @Column(name = "nome", length = 100)
     private String nome;
 
+    @OneToMany(mappedBy = "cliente") // um cliente para muitos pedidos
+    private Set<Pedido> pedidos;
+
     public Cliente() {
+    }
+
+    public Set<Pedido> getPedidos() {
+        return pedidos;
+    }
+
+    public void setPedidos(Set<Pedido> pedidos) {
+        this.pedidos = pedidos;
     }
 
     public Cliente(Integer id, String nome) {
