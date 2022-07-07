@@ -1,7 +1,9 @@
 package io.github.alinebuchino;
 
 import io.github.alinebuchino.domain.entity.Cliente;
+import io.github.alinebuchino.domain.entity.Pedido;
 import io.github.alinebuchino.domain.repository.Clientes;
+import io.github.alinebuchino.domain.repository.Pedidos;
 import org.hibernate.cache.spi.CacheImplementor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -9,23 +11,41 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
 @SpringBootApplication
 public class VendasApplication {
 
     @Bean
-    public CommandLineRunner init(@Autowired Clientes clientes) {
+    public CommandLineRunner init(
+            @Autowired Clientes clientes,
+            @Autowired Pedidos pedidos
+            ) {
         return args -> {
             System.out.println("Salvando clientes");
-            clientes.save(new Cliente("Aline"));
-            clientes.save(new Cliente("Teste"));
+           Cliente Aline = new Cliente("Aline");
+           clientes.save(Aline);
 
-            List<Cliente> result = clientes.encontrarPorNome("Aline");
-            result.forEach(System.out::println);
+            Pedido p = new Pedido();
+            p.setCliente(Aline);
+            p.setDataPedido(LocalDate.now());
+            p.setTotal(BigDecimal.valueOf(100));
 
-            List<Cliente> todosClientes = clientes.findAll();
-            todosClientes.forEach(System.out::println);
+            pedidos.save(p);
+
+//            Cliente cliente = clientes.findClienteFetchPedidos(Aline.getId());
+//            System.out.println(cliente);
+//            System.out.println(cliente.getPedidos());
+
+            pedidos.findByCliente(Aline).forEach(System.out::println);
+
+//            List<Cliente> result = clientes.encontrarPorNome("Aline");
+//            result.forEach(System.out::println);
+//
+//            List<Cliente> todosClientes = clientes.findAll();
+//            todosClientes.forEach(System.out::println);
 //
 //            System.out.println("Atualizando clientes");
 //            todosClientes.forEach(c -> {
@@ -43,13 +63,13 @@ public class VendasApplication {
 //            clientes.findAll().forEach(c -> {
 //                clientes.delete(c);
 //            });
-
-            todosClientes = clientes.findAll();
-            if(todosClientes.isEmpty()){
-                System.out.println("Nenhum cliente encontrado.");
-            }else{
-                todosClientes.forEach(System.out::println);
-            }
+//
+//            todosClientes = clientes.findAll();
+//            if(todosClientes.isEmpty()){
+//                System.out.println("Nenhum cliente encontrado.");
+//            }else{
+//                todosClientes.forEach(System.out::println);
+//            }
         };
     }
 
