@@ -10,12 +10,7 @@ import java.util.List;
 
 public interface Clientes extends JpaRepository<Cliente, Integer> {
 
-    //List<Cliente> findByNomeLike(String nome);
-    //List<Cliente> findByNomeOrId(String nome, Integer id); // buscar por nome ou id
-    //List<Cliente> findByNomeOrIdOrderById(String nome, Integer id); // buscar por nome ou id ordenando por Id
-    //boolean existsByNome(String nome); // verificar se o nome existe ... etc
-
-    @Query(value = " select * from cliente c where c.nome like '%:nome%' ", nativeQuery = true)
+    @Query(value = " select * from cliente c where c.nome like '%:nome%' ", nativeQuery = true) // indica sql nativo
     List<Cliente> encontrarPorNome( @Param("nome") String nome );
 
     @Query(" delete from Cliente c where c.nome =:nome ")
