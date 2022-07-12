@@ -4,15 +4,14 @@ import io.github.alinebuchino.domain.entity.Cliente;
 import io.github.alinebuchino.domain.repository.Clientes;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-import java.util.Optional;
 
-@Controller // permite receber requisições
-//@RequestMapping("/api/clientes")
+@RestController // permite receber requisições
+@RequestMapping("/api/clientes")
 public class ClienteController {
 
     private Clientes clientes;
@@ -21,58 +20,51 @@ public class ClienteController {
         this.clientes = clientes;
     }
 
-    @GetMapping("/api/clientes/{id}")
-    @ResponseBody // o retorno será dentro do corpo da requisição
-    public ResponseEntity getClienteById(@PathVariable Integer id) { // pathVariable é o parametro que será passado na url
-        Optional<Cliente> cliente = clientes.findById(id); // Optional pq pode ou não retornar algo
-
-        if (cliente.isPresent()) {
-            return ResponseEntity.ok(cliente.get());
-        }
-        return ResponseEntity.notFound().build();
-    }
-
-    @PostMapping("/api/clientes")
-    @ResponseBody // ResponseBody é o que irá retornar
-    public ResponseEntity save(@RequestBody Cliente cliente) { // RequestBody é o que irá entrar
-        Cliente clienteSalvo = clientes.save(cliente);
-        return ResponseEntity.ok(clienteSalvo);
-    }
-
-    @DeleteMapping("/api/clientes/{id}")
-    @ResponseBody
-    public ResponseEntity delete(@PathVariable Integer id) {
-        Optional<Cliente> cliente = clientes.findById(id); // Optional pq pode ou não retornar algo
-
-        if (cliente.isPresent()) {
-            clientes.delete(cliente.get());
-            return ResponseEntity.noContent().build(); // noContent não retorna nada
-        }
-        return ResponseEntity.notFound().build();
-    }
-
-    @PutMapping("/api/clientes/{id}")
-    @ResponseBody
-    public ResponseEntity update(@PathVariable Integer id,
-                                 @RequestBody Cliente cliente) {
+    @GetMapping("{id}")
+    public Cliente getClienteById(@PathVariable Integer id) { // pathVariable é o parametro que será passado na url
         return clientes
+                .findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cliente não encontrado"));
+    }
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public Cliente save(@RequestBody Cliente cliente) { // RequestBody é o que irá entrar
+        return clientes.save(cliente);
+    }
+
+    @DeleteMapping("{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable Integer id) {
+        clientes.findById(id)
+                .map(cliente -> {
+                    clientes.delete(cliente);
+                    return cliente;
+                })
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cliente não encontrado"));
+    }
+
+    @PutMapping("{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void update(@PathVariable Integer id,
+                       @RequestBody Cliente cliente) {
+        clientes
                 .findById(id)
                 .map(clienteExistente -> { // se encontrar o id ele mapeia o cliente setando o que desejar
                     cliente.setId(clienteExistente.getId());
                     clientes.save(cliente);
-                    return ResponseEntity.noContent().build();
-                }).orElseGet(() -> ResponseEntity.notFound().build()); // se não encontrar o id
+                    return clienteExistente;
+                }).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cliente não encontrado"));
     }
 
-    @GetMapping("/api/clientes")
-    public ResponseEntity find(Cliente filtro) {
+    @GetMapping
+    public List<Cliente> find(Cliente filtro) {
         ExampleMatcher matcher = ExampleMatcher // ExampleMatcher é um objeto que permite tratar algumas configurações para encontrar os clientes
                 .matching()
                 .withIgnoreCase() // ignorar letra maiuscula ou minuscula
                 .withStringMatcher(
                         ExampleMatcher.StringMatcher.CONTAINING); // encontra a string que vc passou
         Example example = Example.of(filtro, matcher); // pega as propriedades que estão populadas
-        List<Cliente> list = clientes.findAll(example);
-        return ResponseEntity.ok(list);
+        return clientes.findAll(example);
     }
 }
