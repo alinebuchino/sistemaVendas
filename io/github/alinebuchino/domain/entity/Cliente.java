@@ -1,8 +1,15 @@
 package io.github.alinebuchino.domain.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 import java.util.Set;
 
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity // pra dizer ao JPA que Cliente é uma entidade do BD
 @Table(name = "cliente") // utiliza caso queira colocar um nome diferente na tabela, por padrão seria o nome da classe
 public class Cliente {
@@ -20,55 +27,8 @@ public class Cliente {
     // um cliente para muitos pedidos, fetch = trazer junto os pedidos
     private Set<Pedido> pedidos;
 
-    public Cliente() {
-    }
-
-    public Set<Pedido> getPedidos() {
-        return pedidos;
-    }
-
-    public void setPedidos(Set<Pedido> pedidos) {
-        this.pedidos = pedidos;
-    }
-
     public Cliente(Integer id, String nome) {
         this.id = id;
         this.nome = nome;
-    }
-
-    public Cliente(String nome) {
-        this.nome = nome;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getNome() {
-        return nome;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-
-    public String getCpf() {
-        return cpf;
-    }
-
-    public void setCpf(String cpf) {
-        this.cpf = cpf;
-    }
-
-    @Override
-    public String toString() {
-        return "Cliente{" +
-                "id=" + id +
-                ", nome='" + nome + '\'' +
-                '}';
     }
 }
