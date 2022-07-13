@@ -1,4 +1,4 @@
-package io.github.alinebuchino;
+package io.github.alinebuchino.service;
 
 public interface PedidoService {
 }
