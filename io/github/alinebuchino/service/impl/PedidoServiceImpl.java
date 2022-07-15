@@ -1,15 +1,72 @@
 package io.github.alinebuchino.service.impl;
 
+import io.github.alinebuchino.domain.entity.Cliente;
+import io.github.alinebuchino.domain.entity.ItemPedido;
+import io.github.alinebuchino.domain.entity.Pedido;
+import io.github.alinebuchino.domain.entity.Produto;
+import io.github.alinebuchino.domain.repository.Clientes;
+import io.github.alinebuchino.domain.repository.ItemsPedido;
 import io.github.alinebuchino.domain.repository.Pedidos;
+import io.github.alinebuchino.domain.repository.Produtos;
+import io.github.alinebuchino.exception.RegraNegocioException;
+import io.github.alinebuchino.rest.dto.ItemPedidoDTO;
+import io.github.alinebuchino.rest.dto.PedidoDTO;
 import io.github.alinebuchino.service.PedidoService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class PedidoServiceImpl implements PedidoService {
 
-    private Pedidos repository;
+    private final Produtos produtosRepository;
+    private final Clientes clientesRepository;
+    private final Pedidos repository;
+    private final ItemsPedido itemsPedidoRepository;
 
-    public PedidoServiceImpl(Pedidos repository) {
-        this.repository = repository;
+    @Override
+    @Transactional
+    public Pedido salvar(PedidoDTO dto) {
+        Integer idCliente = dto.getCliente();
+        Cliente cliente = clientesRepository
+                .findById(idCliente)
+                .orElseThrow(() -> new RegraNegocioException("Código de cliente inválido!"));
+
+        Pedido pedido = new Pedido();
+        pedido.setTotal(dto.getTotal());
+        pedido.setDataPedido(LocalDate.now());
+        pedido.setCliente(cliente);
+
+        List<ItemPedido> itemsPedido = converterItems(pedido, dto.getItens());
+        repository.save(pedido);
+        itemsPedidoRepository.saveAll(itemsPedido);
+        pedido.setItems(itemsPedido);
+        return pedido;
+    }
+
+    private List<ItemPedido> converterItems(Pedido pedido, List<ItemPedidoDTO> items) {
+        if (items.isEmpty()) {
+            throw new RegraNegocioException("Não é possível realizar um pedido sem items!");
+        }
+        return items.stream().map(dto -> {
+            Integer idProduto = dto.getProduto();
+            Produto produto = produtosRepository
+                    .findById(idProduto)
+                    .orElseThrow(
+                            () -> new RegraNegocioException(
+                                    "Código de produto inválido: " + idProduto
+                            ));
+
+            ItemPedido itemPedido = new ItemPedido();
+            itemPedido.setQuantidade(dto.getQuantidade());
+            itemPedido.setPedido(pedido);
+            itemPedido.setProduto(produto);
+            return itemPedido;
+        }).collect(Collectors.toList());
     }
 }
