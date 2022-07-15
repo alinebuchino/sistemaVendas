@@ -1,5 +1,6 @@
 package io.github.alinebuchino.rest.controller;
 
+import io.github.alinebuchino.exception.PedidoNaoEncontradoException;
 import io.github.alinebuchino.exception.RegraNegocioException;
 import io.github.alinebuchino.rest.APIErrors;
 import org.springframework.http.HttpStatus;
@@ -15,5 +16,11 @@ public class ApplicationControllerAdvice {
     public APIErrors handleRegraNegocioException(RegraNegocioException ex) {
         String mensagemErro = ex.getMessage();
         return new APIErrors(mensagemErro);
+    }
+
+    @ExceptionHandler(PedidoNaoEncontradoException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public APIErrors handlePedidoNaoEncontradoException(PedidoNaoEncontradoException ex) {
+        return new APIErrors(ex.getMessage());
     }
 }

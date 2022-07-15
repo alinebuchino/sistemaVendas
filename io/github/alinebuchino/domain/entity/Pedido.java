@@ -1,5 +1,6 @@
 package io.github.alinebuchino.domain.entity;
 
+import io.github.alinebuchino.domain.enums.StatusPedido;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,27 +11,32 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Entity
-@Table
+@Table(name = "pedido")
 public class Pedido {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column
+    @Column(name = "id")
     private Integer id;
 
-    @ManyToOne // muitos pedidos para um cliente
-    @JoinColumn (name = "cliente_id")
+    @ManyToOne
+    @JoinColumn(name = "cliente_id")
     private Cliente cliente;
 
     @Column(name = "data_pedido")
     private LocalDate dataPedido;
 
-    @Column(length = 20, precision = 20, scale = 2) // 20 caracteres e 2 pontos flutuantes, ex: 1000.00
+    @Column(name = "total", precision = 20, scale = 2)
     private BigDecimal total;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
+    private StatusPedido status;
+
     @OneToMany(mappedBy = "pedido")
-    private List<ItemPedido> items;
+    private List<ItemPedido> itens;
+
 }

@@ -4,10 +4,12 @@ import io.github.alinebuchino.domain.entity.Cliente;
 import io.github.alinebuchino.domain.entity.ItemPedido;
 import io.github.alinebuchino.domain.entity.Pedido;
 import io.github.alinebuchino.domain.entity.Produto;
+import io.github.alinebuchino.domain.enums.StatusPedido;
 import io.github.alinebuchino.domain.repository.Clientes;
 import io.github.alinebuchino.domain.repository.ItemsPedido;
 import io.github.alinebuchino.domain.repository.Pedidos;
 import io.github.alinebuchino.domain.repository.Produtos;
+import io.github.alinebuchino.exception.PedidoNaoEncontradoException;
 import io.github.alinebuchino.exception.RegraNegocioException;
 import io.github.alinebuchino.rest.dto.ItemPedidoDTO;
 import io.github.alinebuchino.rest.dto.PedidoDTO;
@@ -18,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -41,11 +44,12 @@ public class PedidoServiceImpl implements PedidoService {
         pedido.setTotal(dto.getTotal());
         pedido.setDataPedido(LocalDate.now());
         pedido.setCliente(cliente);
+        pedido.setStatus(StatusPedido.REALIZADO);
 
         List<ItemPedido> itemsPedido = converterItems(pedido, dto.getItens());
         repository.save(pedido);
         itemsPedidoRepository.saveAll(itemsPedido);
-        pedido.setItems(itemsPedido);
+        pedido.setItens(itemsPedido);
         return pedido;
     }
 
@@ -68,5 +72,20 @@ public class PedidoServiceImpl implements PedidoService {
             itemPedido.setProduto(produto);
             return itemPedido;
         }).collect(Collectors.toList());
+    }
+
+    @Override
+    public Optional<Pedido> obterPedidoCompleto(Integer id) {
+        return repository.findByIdFetchItens(id);
+    }
+
+    @Override
+    @Transactional
+    public void atualizaStatus(Integer id, StatusPedido statusPedido) {
+        repository.findById(id)
+                .map(pedido -> {
+                    pedido.setStatus(statusPedido);
+                    return repository.save(pedido);
+                }).orElseThrow(() -> new PedidoNaoEncontradoException());
     }
 }

@@ -17,6 +17,7 @@ public class Cliente {
     @GeneratedValue(strategy = GenerationType.AUTO) // representa o auto_increment
     @Column(name = "id") // utiliza caso queira colocar um nome diferente no campo da tabela
     private Integer id;
+
     @Column(name = "nome", length = 100)
     private String nome;
 
