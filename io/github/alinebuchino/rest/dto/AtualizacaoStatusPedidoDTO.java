@@ -1,2 +1,10 @@
-package io.github.alinebuchino.rest.dto;public class AtualizacaoStatusPedidoDTO {
+package io.github.alinebuchino.rest.dto;
+
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
+public class AtualizacaoStatusPedidoDTO {
+    private String novoStatus;
 }

@@ -1,2 +1,7 @@
-package io.github.alinebuchino.exception;public class PedidoNaoEncontradoException {
+package io.github.alinebuchino.exception;
+
+public class PedidoNaoEncontradoException extends RuntimeException {
+    public PedidoNaoEncontradoException() {
+        super("Pedido não encontrado!");
+    }
 }
