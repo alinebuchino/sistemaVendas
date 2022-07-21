@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>io.github.alinebuchino</groupId>
-    <artifactId>vendasSpring</artifactId>
+    <artifactId>sistemasVendas</artifactId>
     <version>0.0.1</version>
 
     <properties>
@@ -44,6 +44,11 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
         </dependency>
     </dependencies>
 
