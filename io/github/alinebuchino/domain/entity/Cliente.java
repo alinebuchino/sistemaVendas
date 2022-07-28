@@ -24,8 +24,7 @@ public class Cliente {
     @NotEmpty(message = "{campo.nome.obrigatorio}")
     private String nome;
 
-    @NotEmpty(message = "{campo.nome.obrigatorio}")
-    @CPF(message = "{campo.cpf.obrigatorio}")
+    @NotEmpty(message = "{campo.cpf.obrigatorio}")
     @Column(name = "cpf", length = 11)
     private String cpf;
 
