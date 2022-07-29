@@ -11,6 +11,7 @@ import io.github.alinebuchino.service.PedidoService;
 
 import static org.springframework.http.HttpStatus.*;
 
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
@@ -24,6 +25,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/pedidos")
+@Api("API DE PEDIDOS")
 public class PedidoController {
 
     private PedidoService service;

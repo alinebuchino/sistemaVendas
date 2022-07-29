@@ -2,7 +2,7 @@ package io.github.alinebuchino.rest.controller;
 
 import io.github.alinebuchino.domain.entity.Cliente;
 import io.github.alinebuchino.domain.repository.Clientes;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.*;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.http.HttpStatus;
@@ -14,6 +14,7 @@ import java.util.List;
 
 @RestController // permite receber requisições
 @RequestMapping("/api/clientes")
+@Api("API DE CLIENTES")
 public class ClienteController {
 
     private Clientes clientes;
@@ -22,17 +23,23 @@ public class ClienteController {
         this.clientes = clientes;
     }
 
-    @ApiOperation(value = "Busca clientes por ID")
     @GetMapping("{id}")
-    public Cliente getClienteById(@PathVariable Integer id) { // pathVariable é o parametro que será passado na url
+    @ApiOperation(value = "Busca clientes por ID")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Cliente encontrado!"),
+            @ApiResponse(code = 404, message = "Cliente não encontrado para o ID informado!")})
+    public Cliente getClienteById(@PathVariable @ApiParam("Id do cliente") Integer id) { // pathVariable é o parametro que será passado na url
         return clientes
                 .findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cliente não encontrado"));
     }
 
-    @ApiOperation(value = "Salva clientes")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    @ApiOperation(value = "Salva clientes")
+    @ApiResponses({
+            @ApiResponse(code = 201, message = "Cliente salvo com sucesso!"),
+            @ApiResponse(code = 400, message = "Erro de validação!")})
     public Cliente save(@RequestBody @Valid Cliente cliente) { // RequestBody é o que irá entrar
         return clientes.save(cliente);
     }

@@ -2,6 +2,7 @@ package io.github.alinebuchino.rest.controller;
 
 import io.github.alinebuchino.domain.entity.Produto;
 import io.github.alinebuchino.domain.repository.Produtos;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
@@ -15,6 +16,7 @@ import java.util.List;
 
 @RestController // permite receber requisições
 @RequestMapping("/api/produtos")
+@Api("API DE PRODUTOS")
 public class ProdutoController {
 
     private Produtos produtos;
