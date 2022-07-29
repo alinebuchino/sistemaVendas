@@ -2,6 +2,7 @@ package io.github.alinebuchino.rest.controller;
 
 import io.github.alinebuchino.domain.entity.Produto;
 import io.github.alinebuchino.domain.repository.Produtos;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +23,7 @@ public class ProdutoController {
         this.produtos = produtos;
     }
 
+    @ApiOperation(value = "Busca produtos por id")
     @GetMapping("{id}")
     public Produto getProdutoById(@PathVariable Integer id) { // pathVariable é o parametro que será passado na url
         return produtos
@@ -29,12 +31,14 @@ public class ProdutoController {
                 .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Produto não encontrado"));
     }
 
+    @ApiOperation(value = "Salva produtos")
     @PostMapping
     @ResponseStatus(CREATED)
     public Produto save(@RequestBody @Valid Produto produto) { // RequestBody é o que irá entrar
         return produtos.save(produto);
     }
 
+    @ApiOperation(value = "Deleta produtos")
     @DeleteMapping("{id}")
     @ResponseStatus(NO_CONTENT)
     public void delete(@PathVariable Integer id) {
@@ -46,6 +50,7 @@ public class ProdutoController {
                 .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Produto não encontrado"));
     }
 
+    @ApiOperation(value = "Atualiza produtos")
     @PutMapping("{id}")
     @ResponseStatus(NO_CONTENT)
     public void update(@PathVariable Integer id,
@@ -59,6 +64,7 @@ public class ProdutoController {
                 }).orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Produto não encontrado"));
     }
 
+    @ApiOperation(value = "Busca de produtos")
     @GetMapping
     public List<Produto> find(Produto filtro) {
         ExampleMatcher matcher = ExampleMatcher // ExampleMatcher é um objeto que permite tratar algumas configurações para encontrar os clientes

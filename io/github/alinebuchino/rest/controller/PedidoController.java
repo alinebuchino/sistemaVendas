@@ -11,6 +11,7 @@ import io.github.alinebuchino.service.PedidoService;
 
 import static org.springframework.http.HttpStatus.*;
 
+import io.swagger.annotations.ApiOperation;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -31,6 +32,7 @@ public class PedidoController {
         this.service = service;
     }
 
+    @ApiOperation(value = "Salva pedidos")
     @PostMapping
     @ResponseStatus(CREATED)
     public Integer save(@RequestBody @Valid PedidoDTO dto) {
@@ -38,6 +40,7 @@ public class PedidoController {
         return pedido.getId();
     }
 
+    @ApiOperation(value = "Busca pedidos por id")
     @GetMapping("{id}")
     public InformacoesPedidoDTO getById(@PathVariable Integer id) {
         return service
@@ -46,6 +49,7 @@ public class PedidoController {
                 .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Pedido não encontrado!"));
     }
 
+    @ApiOperation(value = "Atualiza pedidos")
     @PatchMapping("{id}")
     @ResponseStatus(NO_CONTENT)
     public void updateStatus(@PathVariable Integer id ,
